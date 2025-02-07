@@ -1,0 +1,13 @@
+.rn-notification-menu {
+    height: 50px !important;
+}
+
+.rn-notify-slowHide {
+    animation: slowHide ease-in-out 1s;
+    animation-fill-mode: forwards;
+    animation-delay: 500ms;
+}
+@keyframes slowHide {
+    from { opacity: 1;}
+    to {opacity: 0;}
+}

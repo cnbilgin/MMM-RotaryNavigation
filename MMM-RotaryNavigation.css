@@ -1,0 +1,65 @@
+@import "./src/module/RotaryNavigationMenu/RotaryNavigationMenu.css";
+@import "./src/module/RotaryNotificationMenu/RotaryNotificationMenu.css";
+
+.MMM-RotaryNavigation {
+    position: fixed;
+    bottom:0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin:0;
+}
+
+.MMM-RotaryNavigation * {
+    box-sizing: border-box;
+}
+
+.rn-main {
+    position: relative;
+}
+
+.rn-main .rn-toggle {
+    width: 100px;
+    height: 50px;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    position: relative;
+    transition: all ease-in-out 200ms;
+}
+
+.rn-main.active .rn-toggle {
+    background: white;
+    color: black;
+
+}
+
+.rn-menu {
+    width: 200px;
+    height: 100px;
+    position: absolute;
+    bottom: 0;
+    left: -50%;
+    z-index: 10;
+    transition: transform ease-in-out 200ms;
+    transform-origin: bottom center;
+    transform:scale(0);
+}
+.rn-menu .rn-menu-title {
+    position: absolute;
+    height: 20px;
+    bottom: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    text-align: center;
+    font-weight: bold;
+    font-size:16px;
+}
+
+.rn-menu.show {
+    transform:scale(1);
+}
+

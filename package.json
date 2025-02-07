@@ -1,0 +1,37 @@
+{
+  "name": "MMM-RotaryNavigation",
+  "version": "0.1.0",
+  "description": "HomeAssistant module to create navigation menu with Rotary Encoder",
+  "main": "MMM-RotaryNavigation.js",
+  "scripts": {
+    "dev": "rollup -c --sourcemap=inline --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnbilgin/MMM-HomeAssistant-Rotary.git"
+  },
+  "keywords": [
+    "MagicMirror",
+    "MMM",
+    "Navigation Menu",
+    "Navigation",
+    "Rotary",
+    "Rotary Encoder"
+  ],
+  "author": "cnbilgin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cnbilgin/MMM-HomeAssistant-Rotary/issues"
+  },
+  "homepage": "https://github.com/cnbilgin/MMM-HomeAssistant-Rotary#readme",
+  "dependencies": {
+    "@iiot2k/gpiox": "^2.1.4",
+    "@types/magicmirror-module": "^2.16.5"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "rollup": "^4.30.1",
+    "typescript": "^5.7.3"
+  }
+}
