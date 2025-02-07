@@ -1,5 +1,6 @@
+import { SetActiveMenu } from "./../Module";
 import { RotaryNotification } from "../IRotaryMenu";
-import { RotaryCircularMenu } from "../RotaryCircularMenu";
+import { RotaryMenu } from "../RotaryMenu";
 
 type NotificationEvent = "next" | "prev" | "shortPress" | "longPress" | "press";
 type NotificationEventOption = {
@@ -8,17 +9,33 @@ type NotificationEventOption = {
 };
 type NotificationMenuOptions = {
   events: Record<NotificationEvent, NotificationEventOption>;
-  target: string;
+  targetModuleId: string;
 };
 
 export type ShowHideEvent = {
-  target: string;
+  targetModuleId: string;
 };
 
-export class RotaryNotificationMenu extends RotaryCircularMenu<NotificationMenuOptions> {
-  constructor(protected module: any) {
-    super(module);
+export type RotaryNotificationPayload = {
+  identifier: string;
+};
 
+export type RotarySendNotification = (
+  notification: string,
+  payload: RotaryNotificationPayload
+) => void;
+
+export type RotaryNotificationOptions = {
+  setActiveMenu: SetActiveMenu;
+  sendNotification: RotarySendNotification;
+};
+
+export class RotaryNotificationMenu extends RotaryMenu<NotificationMenuOptions> {
+  sendNotification: RotarySendNotification;
+  constructor(options: RotaryNotificationOptions) {
+    super(options.setActiveMenu);
+
+    this.sendNotification = options.sendNotification;
     this.dom = this.createDom();
   }
 
@@ -34,8 +51,8 @@ export class RotaryNotificationMenu extends RotaryCircularMenu<NotificationMenuO
 
     const event = this.options.events[eventName];
     if (event.notification) {
-      this.module.sendNotification(event.notification, {
-        target: this.options.target
+      this.sendNotification(event.notification, {
+        identifier: this.options.targetModuleId
       });
 
       this.setInfo(eventName);
@@ -45,21 +62,21 @@ export class RotaryNotificationMenu extends RotaryCircularMenu<NotificationMenuO
   }
 
   onHide(callback: (event: ShowHideEvent) => void): void {
-    this._appendEvent("hide", callback);
+    this.appendEvent("hide", callback);
   }
 
   onShow(callback: (event: ShowHideEvent) => void): void {
-    this._appendEvent("show", callback);
+    this.appendEvent("show", callback);
   }
 
   rotaryNotificationReceived(notification: RotaryNotification): void {
+    super.rotaryNotificationReceived(notification);
     switch (notification) {
-      case "ROTARY_PREV":
-        this.handleNotification("next");
-        break;
-
-      case "ROTARY_NEXT":
+      case "ROTARY_LEFT":
         this.handleNotification("prev");
+        break;
+      case "ROTARY_RIGHT":
+        this.handleNotification("next");
         break;
 
       case "ROTARY_PRESS":

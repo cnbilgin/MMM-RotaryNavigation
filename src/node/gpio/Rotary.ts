@@ -68,7 +68,7 @@ export class Rotary {
       (state: number) => {
         if (state === 1) {
           const dtValue = get_gpio(this.pins.DT);
-          const direction = dtValue ? "left" : "right";
+          const direction = dtValue ? "right" : "left";
           this._triggerEvent("turn", { direction });
           this._triggerEvent(direction === "left" ? "turnLeft" : "turnRight");
         }

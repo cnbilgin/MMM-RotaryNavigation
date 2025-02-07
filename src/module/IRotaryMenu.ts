@@ -1,6 +1,6 @@
 export type RotaryNotification =
-  | "ROTARY_PREV"
-  | "ROTARY_NEXT"
+  | "ROTARY_LEFT"
+  | "ROTARY_RIGHT"
   | "ROTARY_PRESS"
   | "ROTARY_SHORT_PRESS"
   | "ROTARY_LONG_PRESS";

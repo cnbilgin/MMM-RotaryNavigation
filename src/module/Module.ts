@@ -16,7 +16,11 @@ type ModuleConfigs = {
   actions: Action[];
 };
 
+export type MenuType = "notification" | "navigation";
+export type SetActiveMenu = (menu: MenuType | null, options?: any) => void;
+
 Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
+  notificationListenBlock: false,
   menus: {
     navigation: null,
     notification: null
@@ -25,23 +29,12 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
   defaults: {
     actions: []
   },
-  selectedIndex: null as null | number,
   activeMenu: null as null | IRotaryMenu,
   init() {},
   start() {
+    this.initMenus();
+
     this.sendSocketNotification("ROTARY_INIT", null);
-    this.menus.navigation = new RotaryNavigationMenu(this, this.config.actions);
-    this.menus.notification = new RotaryNotificationMenu(this);
-
-    this.menus.notification.onHide((e: ShowHideEvent) => {
-      findModuleById(e.target)?.hide(600);
-      this.activeMenu = null;
-    });
-
-    this.menus.notification.onShow((e: ShowHideEvent) => {
-      findModuleById(e.target)?.show(600);
-    });
-
     debugKeyboadEvents(this);
   },
   getDom() {
@@ -76,6 +69,11 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
       this.activeMenu = null;
     }
 
+    this.notificationListenBlock = true;
+    setTimeout(() => {
+      this.notificationListenBlock = false;
+    }, 100);
+
     this.render();
   },
 
@@ -88,12 +86,42 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
   },
 
   socketNotificationReceived(notification) {
+    console.log("notification", notification);
+    if (this.notificationListenBlock) return;
+
     if (this.activeMenu == null) {
       this.setMenu("navigation");
       return;
     }
 
     this.activeMenu.rotaryNotificationReceived(notification);
+  },
+
+  initMenus() {
+    const setActiveMenu: SetActiveMenu = (target, showOptions) =>
+      this.setMenu(target, showOptions);
+
+    this.menus.navigation = new RotaryNavigationMenu({
+      setActiveMenu,
+      actions: this.config.actions
+    });
+
+    const sendNotification = (notification: string, payload?: any) =>
+      this.sendNotification(notification, payload);
+
+    this.menus.notification = new RotaryNotificationMenu({
+      setActiveMenu,
+      sendNotification
+    });
+
+    this.menus.notification.onHide((e: ShowHideEvent) => {
+      findModuleById(e.targetModuleId)?.hide(600);
+      this.activeMenu = null;
+    });
+
+    this.menus.notification.onShow((e: ShowHideEvent) => {
+      findModuleById(e.targetModuleId)?.show(600);
+    });
   },
 
   getStyles() {

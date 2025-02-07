@@ -1,5 +1,6 @@
 import { NodeHelperModule } from "node_helper";
 import { Rotary, RotaryPins } from "./gpio/Rotary";
+import { log } from "logger";
 
 class RotaryNodeHelper {
   rotary: Rotary | null = null;
@@ -20,11 +21,11 @@ class RotaryNodeHelper {
     this.rotary = new Rotary(this.rotaryPins);
 
     this.rotary.onTurnLeft(() => {
-      this.nodeHelper.sendSocketNotification("ROTARY_PREV", null);
+      this.nodeHelper.sendSocketNotification("ROTARY_LEFT", null);
     });
 
     this.rotary.onTurnRight(() => {
-      this.nodeHelper.sendSocketNotification("ROTARY_NEXT", null);
+      this.nodeHelper.sendSocketNotification("ROTARY_RIGHT", null);
     });
 
     this.rotary.onPress(() => {

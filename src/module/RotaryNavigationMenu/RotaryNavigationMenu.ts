@@ -1,27 +1,21 @@
-import { Action } from "../Module";
+import { Action, SetActiveMenu } from "../Module";
 import { RotaryNotification } from "../IRotaryMenu";
-import { RotaryCircularMenu } from "../RotaryCircularMenu";
+import { RotaryMenu } from "../RotaryMenu";
 
-type RotaryOption = {
-  icon: string;
-  actionIndex: number;
-  title: string;
+export type RotaryNavigationOptions = {
+  setActiveMenu: SetActiveMenu;
+  actions: any[];
 };
 
-const AUTO_HIDE_SECONDS = 1000 * 10;
-export class RotaryNavigationMenu extends RotaryCircularMenu {
+export class RotaryNavigationMenu extends RotaryMenu {
   activeIndex: number;
   actions: Action[];
   block = false;
-  autoHideTimeoutId: any = null;
 
-  constructor(
-    protected module: any,
-    actions: any[]
-  ) {
-    super(module);
+  constructor(options: RotaryNavigationOptions) {
+    super(options.setActiveMenu);
 
-    this.actions = actions;
+    this.actions = options.actions;
     this.activeIndex = 0;
 
     this.dom = this.createDom();
@@ -45,17 +39,6 @@ export class RotaryNavigationMenu extends RotaryCircularMenu {
   getActiveAction() {
     return this.actions[this.activeIndex];
   }
-
-  show() {
-    super.show();
-    this.autoHideTimeout();
-  }
-
-  hide() {
-    super.hide();
-    clearTimeout(this.autoHideTimeoutId);
-  }
-
   getOptionsContainer(targetIndex?: number) {
     const container = document.createElement("div");
     container.className = "rn-options-container";
@@ -109,18 +92,18 @@ export class RotaryNavigationMenu extends RotaryCircularMenu {
   }
 
   rotaryNotificationReceived(notification: RotaryNotification): void {
-    this.autoHideTimeout();
-    switch (notification) {
-      case "ROTARY_PREV":
-        this.move("prev");
-        break;
+    super.rotaryNotificationReceived(notification);
 
-      case "ROTARY_NEXT":
+    switch (notification) {
+      case "ROTARY_LEFT":
         this.move("next");
         break;
 
+      case "ROTARY_RIGHT":
+        this.move("prev");
+        break;
+
       case "ROTARY_PRESS":
-        clearTimeout(this.autoHideTimeoutId);
         this.openMenu();
         break;
 
@@ -129,19 +112,17 @@ export class RotaryNavigationMenu extends RotaryCircularMenu {
     }
   }
 
-  autoHideTimeout() {
-    clearTimeout(this.autoHideTimeoutId);
-
-    this.autoHideTimeoutId = setTimeout(() => {
-      this.module.setMenu(null);
-    }, AUTO_HIDE_SECONDS);
-  }
-
   openMenu() {
     const menu = this.getActiveAction().menu;
-    if (menu) this.module.setMenu(menu.type, menu);
+    if (menu) this.setActiveMenu(menu.type, menu);
   }
 }
+
+type RotaryOption = {
+  icon: string;
+  actionIndex: number;
+  title: string;
+};
 
 const createRotaryOption = (index: number, action: Action) => {
   return {
@@ -151,7 +132,6 @@ const createRotaryOption = (index: number, action: Action) => {
   };
 };
 
-const VISIBLE_OPTION_LENGTH = 5;
 const ROTATION_DEGREE = 37;
 const getRotateValueForIndex = (i: number) => {
   const centerIndex = Math.floor(7 / 2);

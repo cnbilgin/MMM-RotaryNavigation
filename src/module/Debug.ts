@@ -13,13 +13,13 @@ export const debugKeyboadEvents = (module: Module.ModuleProperties<any>) => {
         module.socketNotificationReceived("ROTARY_NEXT", null);
         break;
       case "Enter":
+        module.socketNotificationReceived("ROTARY_PRESS", null);
+
         if (lastEnterTimeStamp && e.timeStamp - lastEnterTimeStamp > 500)
           module.socketNotificationReceived("ROTARY_LONG_PRESS", null);
         else module.socketNotificationReceived("ROTARY_SHORT_PRESS", null);
 
         lastEnterTimeStamp = null;
-
-        module.socketNotificationReceived("ROTARY_PRESS", null);
         break;
     }
   });
