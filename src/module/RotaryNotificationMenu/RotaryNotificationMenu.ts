@@ -9,7 +9,7 @@ type NotificationEventOption = {
 };
 type NotificationMenuOptions = {
   events: Record<NotificationEvent, NotificationEventOption>;
-  targetModuleId: string;
+  targetModuleId?: string;
 };
 
 export type ShowHideEvent = {
@@ -22,7 +22,7 @@ export type RotaryNotificationPayload = {
 
 export type RotarySendNotification = (
   notification: string,
-  payload: RotaryNotificationPayload
+  payload?: RotaryNotificationPayload
 ) => void;
 
 export type RotaryNotificationOptions = {
@@ -51,9 +51,13 @@ export class RotaryNotificationMenu extends RotaryMenu<NotificationMenuOptions> 
 
     const event = this.options.events[eventName];
     if (event.notification) {
-      this.sendNotification(event.notification, {
-        identifier: this.options.targetModuleId
-      });
+      const payload =
+        this.options?.targetModuleId !== undefined
+          ? {
+              identifier: this.options.targetModuleId
+            }
+          : undefined;
+      this.sendNotification(event.notification, payload);
 
       this.setInfo(eventName);
     }

@@ -86,7 +86,6 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
   },
 
   socketNotificationReceived(notification) {
-    console.log("notification", notification);
     if (this.notificationListenBlock) return;
 
     if (this.activeMenu == null) {
