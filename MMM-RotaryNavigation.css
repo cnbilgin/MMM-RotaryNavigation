@@ -1,6 +1,10 @@
 @import "./src/module/RotaryNavigationMenu/RotaryNavigationMenu.css";
 @import "./src/module/RotaryNotificationMenu/RotaryNotificationMenu.css";
 
+body {
+    --gap-body-bottom: 160px;
+}
+
 .MMM-RotaryNavigation {
     position: fixed;
     bottom:0;
