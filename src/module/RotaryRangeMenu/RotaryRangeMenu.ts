@@ -6,12 +6,18 @@ type RangeMenuOptions = {
   max: number;
   step: number;
 };
+type RangeMenuNotifications = {
+  requestValue: string,
+  value: string,
+  set: string
+}
 type RangeMenuConfig = {
   options: RangeMenuOptions;
+  notifications: RangeMenuNotifications
 };
 
 type RangeMenuOperations = RotaryMenuOperations & {
-  sendNotification: (notification: string, payload: any) => void;
+  sendNotification: (notification: string, payload?: any) => void;
 }
 
 export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig, RangeMenuOperations> {
@@ -39,13 +45,13 @@ export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig, RangeMenuOperat
     return dom;
   }
 
-  value: number = 0;
+  value: number | null = null;
   changeValue(value: number) {
     if (!this.config) return;
 
     const { min, max } = this.config.options;
 
-    const newValue = Math.max(Math.min(this.value + value, max), min);
+    const newValue = Math.max(Math.min((this.value || 0 ) + value, max), min);
 
     this.value = newValue;
     this.render();
@@ -58,15 +64,18 @@ export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig, RangeMenuOperat
 
     const { min, max } = this.config.options;
 
-    const rate = (this.value - min) / (max - min);
-    const rotation = rate * 180 - 180;
+    let rotation = -180;
+    if(this.value != null) {
+      const rate = (this.value - min) / (max - min);
+      rotation = rate * 180 - 180;
+    }
+  
 
     (valueDom as HTMLDivElement).style.transform = `rotate(${rotation}deg)`;
-    textDom.innerHTML = this.value.toString();
+    textDom.innerHTML = this.value?.toString() || "";
   }
 
   rotaryNotificationReceived(notification: RotaryNotification): void {
-    console.log(notification);
     super.rotaryNotificationReceived(notification);
     switch (notification) {
       case "ROTARY_LEFT":
@@ -77,6 +86,7 @@ export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig, RangeMenuOperat
         break;
 
       case "ROTARY_PRESS":
+        this.sendValue();
         this.operations.close();
         break;
 
@@ -89,5 +99,37 @@ export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig, RangeMenuOperat
       default:
         return;
     }
+  }
+
+  notificationReceived(notification: string, payload: any): void {
+    const valueNotification = this.config!.notifications.value;
+    if(valueNotification && valueNotification === notification) {
+      this.changeValue(payload);
+    }
+  }
+
+  private collectValue() {
+    const requestValue = this.config?.notifications?.requestValue;
+    if(requestValue)
+      this.operations.sendNotification(requestValue);
+
+  }
+  private sendValue() {
+    this.operations.sendNotification(this.config!.notifications.set, this.value)
+  }
+
+  show(config?: RangeMenuConfig): void {
+    super.show(config);
+
+    this.collectValue();
+  }
+
+  hide(): void {
+    super.hide();
+
+    setTimeout(() => {
+      this.value = null;
+      this.render();
+    }, 300)
   }
 }

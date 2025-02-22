@@ -50,6 +50,9 @@ export class RotaryMenu<T extends {}, P extends RotaryMenuOperations = RotaryMen
     this.autoHideTimeout();
   }
 
+  notificationReceived(notification: string, payload: any): void { 
+  }
+
   onShow(callback: RotaryMenuEventCallback) {
     this.appendEvent("show", callback);
   }

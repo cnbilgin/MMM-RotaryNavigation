@@ -105,7 +105,7 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
 
   notificationReceived(notification, payload) {
     if (this.activeMenu != null)
-      this.activeMenu.notificationReceived?.(notification, payload);
+      this.activeMenu.notificationReceived(notification, payload);
   },
 
   initMenus() {

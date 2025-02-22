@@ -10,5 +10,5 @@ export interface IRotaryMenu {
   hide(): void;
 
   rotaryNotificationReceived(notification: RotaryNotification): void;
-  notificationReceived?(notification: string, payload: any): void
+  notificationReceived(notification: string, payload: any): void
 }
