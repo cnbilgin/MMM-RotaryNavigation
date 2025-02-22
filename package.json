@@ -4,7 +4,8 @@
   "description": "HomeAssistant module to create navigation menu with Rotary Encoder",
   "main": "MMM-RotaryNavigation.js",
   "scripts": {
-    "dev": "rollup -c --sourcemap=inline --watch"
+    "dev": "npm run build -- --watch",
+    "build": "rollup -c --sourcemap=inline"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,6 @@
   },
   "homepage": "https://github.com/cnbilgin/MMM-HomeAssistant-Rotary#readme",
   "dependencies": {
-    "@iiot2k/gpiox": "^2.1.4"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.0",
