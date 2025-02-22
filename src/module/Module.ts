@@ -15,6 +15,7 @@ export type Action = {
 
 type ModuleConfigs = {
   actions: Action[];
+  keyboard: boolean;
 };
 
 export type MenuType = "notification" | "navigation";
@@ -29,7 +30,8 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
   },
   options: [] as string[],
   defaults: {
-    actions: []
+    actions: [],
+    keyboard: false
   },
   activeMenu: null as null | IRotaryMenu,
   init() {},
@@ -37,7 +39,9 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
     this.initMenus();
 
     this.sendSocketNotification("ROTARY_INIT", null);
-    debugKeyboadEvents(this);
+
+    if(this.config.keyboard)
+      debugKeyboadEvents(this);
     // this.setMenu("range");
   },
   getDom() {
@@ -97,6 +101,11 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
     }
 
     this.activeMenu.rotaryNotificationReceived(notification);
+  },
+
+  notificationReceived(notification, payload) {
+    if (this.activeMenu != null)
+      this.activeMenu.notificationReceived?.(notification, payload);
   },
 
   initMenus() {
