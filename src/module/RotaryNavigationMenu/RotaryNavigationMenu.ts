@@ -1,21 +1,20 @@
 import { Action, SetActiveMenu } from "../Module";
 import { RotaryNotification } from "../IRotaryMenu";
-import { RotaryMenu } from "../RotaryMenu";
+import { RotaryMenu, RotaryMenuOperations } from "../RotaryMenu";
 
-export type RotaryNavigationOptions = {
-  setActiveMenu: SetActiveMenu;
-  actions: any[];
+export type RotaryNavigationOperations  = RotaryMenuOperations & {
+  setMenu: SetActiveMenu
 };
 
-export class RotaryNavigationMenu extends RotaryMenu {
+export class RotaryNavigationMenu extends RotaryMenu<{},RotaryNavigationOperations> {
   activeIndex: number;
-  actions: Action[];
   block = false;
+  actions: Action[];
 
-  constructor(options: RotaryNavigationOptions) {
-    super(options.setActiveMenu);
+  constructor(operations: RotaryNavigationOperations, actions: Action[]) {
+    super(operations);
 
-    this.actions = options.actions;
+    this.actions = actions;
     this.activeIndex = 0;
 
     this.dom = this.createDom();
@@ -114,8 +113,7 @@ export class RotaryNavigationMenu extends RotaryMenu {
 
   openMenu() {
     const menu = this.getActiveAction().menu;
-    console.log(menu);
-    if (menu) this.setActiveMenu(menu.type, menu);
+    if (menu) this.operations.setMenu(menu.type, menu);
   }
 }
 

@@ -1,15 +1,21 @@
 import { IRotaryMenu, RotaryNotification } from "./IRotaryMenu";
-import { SetActiveMenu } from "./Module";
 type RotaryMenuEvent = "show" | "hide";
 type RotaryMenuEventCallback = (event?: any) => void;
 
 const AUTO_HIDE_SECONDS = 5 * 1000;
-export class RotaryMenu<T = undefined> implements IRotaryMenu {
-  options?: T;
+
+export type RotaryMenuClose = () => void
+export type RotaryMenuOperations = {
+  close: () => {}
+}
+export class RotaryMenu<T extends {}, P extends RotaryMenuOperations = RotaryMenuOperations> implements IRotaryMenu {
+  operations: P;
+  config?: T;
   dom: HTMLDivElement;
   eventList: Partial<Record<RotaryMenuEvent, RotaryMenuEventCallback[]>> = {};
-  constructor(protected setActiveMenu: SetActiveMenu) {
+  constructor(operations: P) {
     this.dom = this.createBaseDom();
+    this.operations = operations;
   }
 
   createBaseDom() {
@@ -27,18 +33,18 @@ export class RotaryMenu<T = undefined> implements IRotaryMenu {
     return this.dom;
   }
 
-  show(options?: T) {
-    this.options = options;
+  show(config?: T) {
+    this.config = config;
     this.autoHideTimeout();
 
     this.dom.classList.add("show");
-    this.triggerEvent("show", this.options);
+    this.triggerEvent("show", this.operations);
   }
   hide(): void {
     this.dom.classList.remove("show");
     clearInterval(this.autoHideTimeoutId);
 
-    this.triggerEvent("hide", this.options);
+    this.triggerEvent("hide", this.operations);
   }
   rotaryNotificationReceived(notification: RotaryNotification): void {
     this.autoHideTimeout();
@@ -56,7 +62,7 @@ export class RotaryMenu<T = undefined> implements IRotaryMenu {
     clearTimeout(this.autoHideTimeoutId);
 
     this.autoHideTimeoutId = setTimeout(() => {
-      this.setActiveMenu(null);
+      this.operations.close();
     }, AUTO_HIDE_SECONDS);
   }
 
@@ -69,7 +75,7 @@ export class RotaryMenu<T = undefined> implements IRotaryMenu {
     this.eventList[eventType].push(callback);
   }
 
-  protected triggerEvent(eventType: RotaryMenuEvent, event?: T) {
+  protected triggerEvent(eventType: RotaryMenuEvent, event?: P) {
     if (!this.eventList[eventType] || this.eventList[eventType].length === 0)
       return;
 

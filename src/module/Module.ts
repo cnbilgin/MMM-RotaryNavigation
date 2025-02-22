@@ -10,7 +10,7 @@ import { RotaryRangeMenu } from "./RotaryRangeMenu/RotaryRangeMenu";
 export type Action = {
   icon: string;
   title: string;
-  menu?: { type: "notification" | "navigation" };
+  menu?: { type: MenuType };
 };
 
 type ModuleConfigs = {
@@ -18,7 +18,7 @@ type ModuleConfigs = {
   keyboard: boolean;
 };
 
-export type MenuType = "notification" | "navigation";
+export type MenuType = "notification" | "navigation" | "range";
 export type SetActiveMenu = (menu: MenuType | null, options?: any) => void;
 
 Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
@@ -109,21 +109,23 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
   },
 
   initMenus() {
+    const closeMenu = () => this.setMenu(null);
     const setActiveMenu: SetActiveMenu = (target, showOptions) =>
       this.setMenu(target, showOptions);
-
-    this.menus.navigation = new RotaryNavigationMenu({
-      setActiveMenu,
-      actions: this.config.actions
-    });
-
     const sendNotification = (notification: string, payload?: any) =>
       this.sendNotification(notification, payload);
 
-    this.menus.notification = new RotaryNotificationMenu({
-      setActiveMenu,
-      sendNotification
-    });
+    this.menus.navigation = new RotaryNavigationMenu(
+      {close: closeMenu, setMenu: setActiveMenu},
+      this.config.actions
+    );
+    
+    this.menus.notification = new RotaryNotificationMenu(
+      {
+      sendNotification,
+      close: closeMenu
+    }, 
+  );
 
     this.menus.notification.onHide((e: ShowHideEvent) => {
       findModuleById(e.targetModuleId)?.hide(600);
@@ -134,9 +136,12 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
       findModuleById(e.targetModuleId)?.show(600);
     });
 
-    this.menus.range = new RotaryRangeMenu({
-      setActiveMenu
-    });
+    this.menus.range = new RotaryRangeMenu(
+      {
+        sendNotification,
+        close: closeMenu
+      }
+    );
   },
 
   getStyles() {

@@ -1,13 +1,13 @@
 import { SetActiveMenu } from "./../Module";
 import { RotaryNotification } from "../IRotaryMenu";
-import { RotaryMenu } from "../RotaryMenu";
+import { RotaryMenu, RotaryMenuOperations } from "../RotaryMenu";
 
 type NotificationEvent = "next" | "prev" | "shortPress" | "longPress" | "press";
 type NotificationEventOption = {
   notification?: string;
   close?: boolean;
 };
-type NotificationMenuOptions = {
+type NotificationMenuConfig = {
   events: Record<NotificationEvent, NotificationEventOption>;
   targetModuleId?: string;
 };
@@ -25,17 +25,13 @@ export type RotarySendNotification = (
   payload?: RotaryNotificationPayload
 ) => void;
 
-export type RotaryNotificationOptions = {
-  setActiveMenu: SetActiveMenu;
+export type RotaryNotificationOperations = RotaryMenuOperations & {
   sendNotification: RotarySendNotification;
 };
 
-export class RotaryNotificationMenu extends RotaryMenu<NotificationMenuOptions> {
-  sendNotification: RotarySendNotification;
-  constructor(options: RotaryNotificationOptions) {
-    super(options.setActiveMenu);
-
-    this.sendNotification = options.sendNotification;
+export class RotaryNotificationMenu extends RotaryMenu<NotificationMenuConfig, RotaryNotificationOperations> {
+  constructor(operations: RotaryNotificationOperations) {
+    super(operations);
     this.dom = this.createDom();
   }
 
@@ -47,18 +43,22 @@ export class RotaryNotificationMenu extends RotaryMenu<NotificationMenuOptions> 
   }
 
   handleNotification(eventName: NotificationEvent) {
-    if (!this.options || !(eventName in this.options.events)) return;
+    if(!this.config)
+      return;
+    
+    const {targetModuleId, events} = this.config;
+    if (!(eventName in events)) return;
 
-    const event = this.options.events[eventName];
+    const event = events[eventName];
     if (event.notification) {
       const payload =
-        this.options?.targetModuleId !== undefined
+        targetModuleId !== undefined
           ? {
-              identifier: this.options.targetModuleId
+              identifier: targetModuleId
             }
           : undefined;
-      this.sendNotification(event.notification, payload);
 
+      this.operations.sendNotification(event.notification, payload);
       this.setInfo(eventName);
     }
 

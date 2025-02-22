@@ -1,6 +1,5 @@
 import { RotaryNotification } from "../IRotaryMenu";
-import { SetActiveMenu } from "../Module";
-import { RotaryMenu } from "../RotaryMenu";
+import { RotaryMenu, RotaryMenuOperations } from "../RotaryMenu";
 
 type RangeMenuOptions = {
   min: number;
@@ -11,13 +10,13 @@ type RangeMenuConfig = {
   options: RangeMenuOptions;
 };
 
-export type RotaryRangeOptions = {
-  setActiveMenu: SetActiveMenu;
-};
+type RangeMenuOperations = RotaryMenuOperations & {
+  sendNotification: (notification: string, payload: any) => void;
+}
 
-export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig> {
-  constructor(options: RotaryRangeOptions) {
-    super(options.setActiveMenu);
+export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig, RangeMenuOperations> {
+  constructor(operations: RangeMenuOperations) {
+    super(operations);
     this.dom = this.createDom();
   }
 
@@ -42,9 +41,9 @@ export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig> {
 
   value: number = 0;
   changeValue(value: number) {
-    if (!this.options) return;
+    if (!this.config) return;
 
-    const { min, max } = this.options.options;
+    const { min, max } = this.config.options;
 
     const newValue = Math.max(Math.min(this.value + value, max), min);
 
@@ -55,9 +54,9 @@ export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig> {
   render() {
     const valueDom = this.dom.querySelector(".progress-value");
     const textDom = this.dom.querySelector(".progress-text");
-    if (!this.options || !valueDom || !textDom) return;
+    if (!this.config || !valueDom || !textDom) return;
 
-    const { min, max } = this.options.options;
+    const { min, max } = this.config.options;
 
     const rate = (this.value - min) / (max - min);
     const rotation = rate * 180 - 180;
@@ -71,14 +70,14 @@ export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig> {
     super.rotaryNotificationReceived(notification);
     switch (notification) {
       case "ROTARY_LEFT":
-        this.changeValue(-1 * (this.options?.options.step || 1));
+        this.changeValue(-1 * (this.config?.options.step || 1));
         break;
       case "ROTARY_RIGHT":
-        this.changeValue(this.options?.options.step || 1);
+        this.changeValue(this.config?.options.step || 1);
         break;
 
       case "ROTARY_PRESS":
-        this.setActiveMenu("navigation");
+        this.operations.close();
         break;
 
       case "ROTARY_LONG_PRESS":
