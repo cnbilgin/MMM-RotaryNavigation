@@ -114,6 +114,7 @@ export class RotaryNavigationMenu extends RotaryMenu {
 
   openMenu() {
     const menu = this.getActiveAction().menu;
+    console.log(menu);
     if (menu) this.setActiveMenu(menu.type, menu);
   }
 }

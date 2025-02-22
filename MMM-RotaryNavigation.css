@@ -1,5 +1,6 @@
 @import "./src/module/RotaryNavigationMenu/RotaryNavigationMenu.css";
 @import "./src/module/RotaryNotificationMenu/RotaryNotificationMenu.css";
+@import "./src/module/RotaryRangeMenu/RotaryRangeMenu.css";
 
 body {
     --gap-body-bottom: 160px;

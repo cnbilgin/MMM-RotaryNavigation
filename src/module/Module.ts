@@ -5,6 +5,7 @@ import {
   RotaryNotificationMenu,
   ShowHideEvent
 } from "./RotaryNotificationMenu/RotaryNotificationMenu";
+import { RotaryRangeMenu } from "./RotaryRangeMenu/RotaryRangeMenu";
 
 export type Action = {
   icon: string;
@@ -23,7 +24,8 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
   notificationListenBlock: false,
   menus: {
     navigation: null,
-    notification: null
+    notification: null,
+    range: null
   },
   options: [] as string[],
   defaults: {
@@ -36,6 +38,7 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
 
     this.sendSocketNotification("ROTARY_INIT", null);
     debugKeyboadEvents(this);
+    // this.setMenu("range");
   },
   getDom() {
     const wrapper = document.createElement("div");
@@ -120,6 +123,10 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
 
     this.menus.notification.onShow((e: ShowHideEvent) => {
       findModuleById(e.targetModuleId)?.show(600);
+    });
+
+    this.menus.range = new RotaryRangeMenu({
+      setActiveMenu
     });
   },
 
