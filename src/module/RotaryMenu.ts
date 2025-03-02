@@ -4,11 +4,15 @@ type RotaryMenuEventCallback = (event?: any) => void;
 
 const AUTO_HIDE_SECONDS = 5 * 1000;
 
-export type RotaryMenuClose = () => void
+export type RotaryMenuClose = () => void;
 export type RotaryMenuOperations = {
-  close: () => {}
-}
-export class RotaryMenu<T extends {}, P extends RotaryMenuOperations = RotaryMenuOperations> implements IRotaryMenu {
+  close: () => {};
+};
+export class RotaryMenu<
+  T extends {},
+  P extends RotaryMenuOperations = RotaryMenuOperations
+> implements IRotaryMenu
+{
   operations: P;
   config?: T;
   dom: HTMLDivElement;
@@ -38,20 +42,19 @@ export class RotaryMenu<T extends {}, P extends RotaryMenuOperations = RotaryMen
     this.autoHideTimeout();
 
     this.dom.classList.add("show");
-    this.triggerEvent("show", this.operations);
+    this.triggerEvent("show", this.config);
   }
   hide(): void {
     this.dom.classList.remove("show");
     clearInterval(this.autoHideTimeoutId);
 
-    this.triggerEvent("hide", this.operations);
+    this.triggerEvent("hide", this.config);
   }
   rotaryNotificationReceived(notification: RotaryNotification): void {
     this.autoHideTimeout();
   }
 
-  notificationReceived(notification: string, payload: any): void { 
-  }
+  notificationReceived(notification: string, payload: any): void {}
 
   onShow(callback: RotaryMenuEventCallback) {
     this.appendEvent("show", callback);
@@ -78,7 +81,7 @@ export class RotaryMenu<T extends {}, P extends RotaryMenuOperations = RotaryMen
     this.eventList[eventType].push(callback);
   }
 
-  protected triggerEvent(eventType: RotaryMenuEvent, event?: P) {
+  protected triggerEvent(eventType: RotaryMenuEvent, event?: T) {
     if (!this.eventList[eventType] || this.eventList[eventType].length === 0)
       return;
 
