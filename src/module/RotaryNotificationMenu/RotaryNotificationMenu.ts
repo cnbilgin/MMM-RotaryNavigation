@@ -29,7 +29,10 @@ export type RotaryNotificationOperations = RotaryMenuOperations & {
   sendNotification: RotarySendNotification;
 };
 
-export class RotaryNotificationMenu extends RotaryMenu<NotificationMenuConfig, RotaryNotificationOperations> {
+export class RotaryNotificationMenu extends RotaryMenu<
+  NotificationMenuConfig,
+  RotaryNotificationOperations
+> {
   constructor(operations: RotaryNotificationOperations) {
     super(operations);
     this.dom = this.createDom();
@@ -43,10 +46,9 @@ export class RotaryNotificationMenu extends RotaryMenu<NotificationMenuConfig, R
   }
 
   handleNotification(eventName: NotificationEvent) {
-    if(!this.config)
-      return;
-    
-    const {targetModuleId, events} = this.config;
+    if (!this.config) return;
+
+    const { targetModuleId, events } = this.config;
     if (!(eventName in events)) return;
 
     const event = events[eventName];

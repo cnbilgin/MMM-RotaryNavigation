@@ -115,7 +115,9 @@ export class RotaryRangeMenu extends RotaryMenu<RangeMenuConfig, RangeMenuOperat
 
   }
   private sendValue() {
-    this.operations.sendNotification(this.config!.notifications.set, this.value)
+    this.operations.sendNotification(this.config!.notifications.set, {
+      value: this.value
+    });
   }
 
   show(config?: RangeMenuConfig): void {

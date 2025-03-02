@@ -40,9 +40,7 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
 
     this.sendSocketNotification("ROTARY_INIT", null);
 
-    if(this.config.keyboard)
-      debugKeyboadEvents(this);
-    // this.setMenu("range");
+    if (this.config.keyboard) debugKeyboadEvents(this);
   },
   getDom() {
     const wrapper = document.createElement("div");
@@ -116,16 +114,14 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
       this.sendNotification(notification, payload);
 
     this.menus.navigation = new RotaryNavigationMenu(
-      {close: closeMenu, setMenu: setActiveMenu},
+      { close: closeMenu, setMenu: setActiveMenu },
       this.config.actions
     );
-    
-    this.menus.notification = new RotaryNotificationMenu(
-      {
+
+    this.menus.notification = new RotaryNotificationMenu({
       sendNotification,
       close: closeMenu
-    }, 
-  );
+    });
 
     this.menus.notification.onHide((e: ShowHideEvent) => {
       findModuleById(e.targetModuleId)?.hide(600);
@@ -136,12 +132,10 @@ Module.register<ModuleConfigs>("MMM-RotaryNavigation", {
       findModuleById(e.targetModuleId)?.show(600);
     });
 
-    this.menus.range = new RotaryRangeMenu(
-      {
-        sendNotification,
-        close: closeMenu
-      }
-    );
+    this.menus.range = new RotaryRangeMenu({
+      sendNotification,
+      close: closeMenu
+    });
   },
 
   getStyles() {
