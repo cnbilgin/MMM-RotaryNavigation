@@ -2,7 +2,7 @@ import { SetActiveMenu } from "./../Module";
 import { RotaryNotification } from "../IRotaryMenu";
 import { RotaryMenu, RotaryMenuOperations } from "../RotaryMenu";
 
-type NotificationEvent = "next" | "prev" | "shortPress" | "longPress" | "press";
+type NotificationEvent = "next" | "prev" | "shortPress" | "longPress" | "press" | "show" | "hide";
 type NotificationEventOption = {
   notification?: string;
   close?: boolean;
@@ -45,7 +45,7 @@ export class RotaryNotificationMenu extends RotaryMenu<
     return dom;
   }
 
-  handleNotification(eventName: NotificationEvent) {
+  handleNotificationEvent(eventName: NotificationEvent) {
     if (!this.config) return;
 
     const { targetModuleId, events } = this.config;
@@ -79,22 +79,22 @@ export class RotaryNotificationMenu extends RotaryMenu<
     super.rotaryNotificationReceived(notification);
     switch (notification) {
       case "ROTARY_LEFT":
-        this.handleNotification("prev");
+        this.handleNotificationEvent("prev");
         break;
       case "ROTARY_RIGHT":
-        this.handleNotification("next");
+        this.handleNotificationEvent("next");
         break;
 
       case "ROTARY_PRESS":
-        this.handleNotification("press");
+        this.handleNotificationEvent("press");
         break;
 
       case "ROTARY_LONG_PRESS":
-        this.handleNotification("longPress");
+        this.handleNotificationEvent("longPress");
         break;
 
       case "ROTARY_SHORT_PRESS":
-        this.handleNotification("shortPress");
+        this.handleNotificationEvent("shortPress");
         break;
 
       default:
@@ -123,5 +123,15 @@ export class RotaryNotificationMenu extends RotaryMenu<
     this.infoTimeoutId = setTimeout(() => {
       cleanup();
     }, 1500);
+  
+  }
+  show(config?: NotificationMenuConfig) {
+    super.show(config);
+    this.handleNotificationEvent("show");
+  }
+
+  hide() {
+    super.hide();
+    this.handleNotificationEvent("hide");
   }
 }
