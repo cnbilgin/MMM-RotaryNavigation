@@ -3,7 +3,7 @@
 .rn-navigation {
     border-top-left-radius: 100px;
     border-top-right-radius: 100px;
-    background-color: white;
+    background-color: var(--color-rotary-background);
 }
 .rn-navigation .rn-nav-active {
     width: 45px;
@@ -14,7 +14,7 @@
     left: 0;
     right: 0;
     margin: 0 auto;
-    backdrop-filter: invert(100%);
+    backdrop-filter: invert(100%) contrast(2);
     z-index: 1;
 }
 
@@ -38,6 +38,6 @@
     transform: rotate(var(--degree));
     padding: 8px 0 0 0;
     font-size: 24px;
-    color: black;
+    color: var(--color-rotary-dark);
     text-align: center;
 }

@@ -1,5 +1,5 @@
 .rn-range-menu {
-    background-color: #444444;
+    background-color: var(--color-rotary-muted-dark);
     border-top-left-radius: 100px;
     border-top-right-radius: 100px;
     z-index:21 !important;
@@ -15,7 +15,7 @@
 .rn-range-menu .progress-container .progress-value {
     width: 200px;
     height: 100px;
-    background: white;
+    background: var(--color-rotary-background);
     border-top-left-radius: 100px;
     border-top-right-radius: 100px;
     transform: rotate(-180deg);
@@ -30,13 +30,13 @@
     z-index: 1;
     left: 25px;
     bottom: 0;
-    background-color: white;
+    background-color: var(--color-rotary-background);
     border-top-left-radius: 75px;
     border-top-right-radius: 75px;
     font-size: 36px;
     font-weight: bold;
     text-align: center;
-    color: black;
+    color: var(--color-rotary-dark);
     display: flex;
     justify-content: center;
     align-items: center;

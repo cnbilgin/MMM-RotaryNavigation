@@ -2,6 +2,14 @@
 @import "./src/module/RotaryNotificationMenu/RotaryNotificationMenu.css";
 @import "./src/module/RotaryRangeMenu/RotaryRangeMenu.css";
 
+:root {
+    --color-rotary-background: #fff;
+    --color-rotary-dark: #000;
+    --color-rotary-text-muted: var(--color-text-dimmed); 
+    /* --color-rotary-muted-light: #444444; */
+    --color-rotary-muted-dark: #444444;
+}
+
 body {
     --gap-body-bottom: 160px;
 }
@@ -36,8 +44,8 @@ body {
 }
 
 .rn-main.active .rn-toggle {
-    background: white;
-    color: black;
+    background: var(--color-rotary-background);
+    color: var(--color-rotary-dark);
 
 }
 
@@ -62,6 +70,7 @@ body {
     text-align: center;
     font-weight: bold;
     font-size:16px;
+    color: var(--color-rotary-text-muted);
 }
 
 .rn-menu.show {
